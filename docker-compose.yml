@@ -1,20 +1,19 @@
-mysqla:
-  container_name: mysqla
-  image: mysql:5.7
-  environment:
-    - "MYSQL_ROOT_PASSWORD=secret"
+version: '2'
 
-mysqlb:
-  container_name: mysqlb
-  image: mysql:5.7
-  environment:
-    - "MYSQL_ROOT_PASSWORD=secret"
+services:
+  mysqla:
+    container_name: mysqla
+    image: mysql:5.7
+    environment:
+      - "MYSQL_ROOT_PASSWORD=secret"
+  mysqlb:
+    container_name: mysqlb
+    image: mysql:5.7
+    environment:
+      - "MYSQL_ROOT_PASSWORD=secret"
+  proxysql:
+    container_name: proxysql
+    image: dtestops/proxysql
+    volumes:
+      - ./proxysql.cnf:/etc/proxysql.cnf
 
-proxysql:
-  container_name: proxysql
-  image: dtestops/proxysql
-  links:
-    - mysqla:mysqla
-    - mysqlb:mysqlb
-  volumes:
-    - ./proxysql.cnf:/etc/proxysql.cnf
