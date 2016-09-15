@@ -1,14 +1,28 @@
 version: '2'
 
 services:
+  master:
+    container_name: master
+    image: dtestops/mysql:5.7
+    environment:
+      - "MYSQL_ROOT_PASSWORD=secret"
+    volumes:
+      - ./configfiles/master.cnf:/etc/mysql/conf.d/replication.cnf
+  slave:
+    container_name: slave
+    image: dtestops/mysql:5.7
+    environment:
+      - "MYSQL_ROOT_PASSWORD=secret"
+    volumes:
+      - ./configfiles/slave.cnf:/etc/mysql/conf.d/replication.cnf
   mysqla:
     container_name: mysqla
-    image: mysql:5.7
+    image: dtestops/mysql:5.6
     environment:
       - "MYSQL_ROOT_PASSWORD=secret"
   mysqlb:
     container_name: mysqlb
-    image: mysql:5.7
+    image: dtestops/mysql:5.7
     environment:
       - "MYSQL_ROOT_PASSWORD=secret"
   proxysql:

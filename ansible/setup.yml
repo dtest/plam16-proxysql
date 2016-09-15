@@ -1,0 +1,74 @@
+---
+# Sets up replication between master/slave docker containers
+- hosts: failover
+  become: no
+  vars:
+    mysql_replication:
+      user: repl
+      password: r3plp@ss
+    root_password: secret
+  tasks:
+    - name: "Get replication coordinates"
+      mysql_replication:
+        mode: getmaster
+        login_password: "{{ root_password }}"
+      register: res_getmaster
+      when: db_role == 'master'
+
+    - name: "Set master facts."
+      set_fact:
+        master_coords: "{{ res_getmaster }}"
+        master_host: "{{ hostvars['master']['ansible_default_ipv4']['address'] }}"
+      when: db_role == 'master'
+
+    - name: "Set slave facts"
+      set_fact:
+        master_coords: "{{ hostvars['master']['master_coords'] }}"
+        master_host: "{{ hostvars['master']['ansible_default_ipv4']['address'] }}"
+      when: db_role == 'slave'
+
+    - name: Create replication user on master
+      mysql_user:
+        state: present
+        name: "{{ mysql_replication['user'] }}"
+        host: "%"
+        password: "{{ mysql_replication['password'] }}"
+        priv: "*.*:REPLICATION SLAVE"
+        login_password: "{{ root_password }}"
+      when: db_role == 'master'
+
+    - name: Check if slave is already configured for replication
+      mysql_replication:
+        mode: getslave
+        login_password: "{{ root_password }}"
+      ignore_errors: true
+      register: slave
+      when: db_role == 'slave'
+
+    - debug: var=slave verbosity=3
+
+    - name: Change the master in slave to start the replication
+      mysql_replication:
+        mode: changemaster
+        master_host: "{{ master_host }}"
+        master_log_file: "{{ master_coords['File'] }}"
+        master_log_pos: "{{ master_coords['Position'] }}"
+        master_user: "{{ mysql_replication['user'] }}"
+        master_password: "{{ mysql_replication['password'] }}"
+        login_password: "{{ root_password }}"
+      when: slave|failed and db_role == 'slave'
+      register: change_master
+      failed_when: change_master|failed and change_master.msg.find('Sending passwords in plain text') == -1
+      changed_when: change_master|failed and change_master.msg.find('Sending passwords in plain text') != -1
+
+    - debug: var=change_master verbosity=3
+
+    # TODO: Support delayed slaves
+    - name: Start slave
+      mysql_replication:
+        mode: startslave
+        login_password: "{{ root_password }}"
+      when: db_role == 'slave'
+
+#   - configure proxysql to point to both
+

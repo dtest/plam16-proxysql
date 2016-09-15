@@ -20,7 +20,7 @@ case $HOST in
   proxysql)
     docker exec -it $HOST mysql -h 127.0.0.1 -P 6032 -u admin -p
   ;;
-  mysqla|mysqlb)
+  mysqla|mysqlb|master|slave)
     docker exec -it $HOST mysql -h 127.0.0.1 -P 3306 -u root -p
   ;;
 esac

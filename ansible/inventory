@@ -1,0 +1,12 @@
+master db_role=master
+slave db_role=slave
+mysqla
+mysqlb
+
+[failover]
+master
+slave
+
+[mirror]
+mysqla
+mysqlb
