@@ -1,0 +1,6 @@
+---
+proxysql_port: 6032
+
+proxysql_admin:
+  user: admin
+  password: admin

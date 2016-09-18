@@ -1,0 +1,14 @@
+---
+root_password: secret
+
+mysql_replication:
+  user: repl
+  password: r3plp@ss
+
+proxysql_monitor:
+  user: proxysql
+  password: monitor
+
+proxysql_admin:
+  user: admin
+  password: admin
