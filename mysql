@@ -9,6 +9,10 @@ do
       HOST="$2"
       shift # past argument
     ;;
+    -u|--user)
+      USER="$2"
+      shift # past argument
+    ;;
     *)
             # unknown option
     ;;
@@ -17,10 +21,13 @@ do
 done
 
 case $HOST in
-  proxysql)
-    docker exec -it $HOST mysql -h 127.0.0.1 -P 6032 -u admin -p
+  proxy-admin)
+    docker exec -it proxysql mysql -h 127.0.0.1 -P 6032 -u admin -padmin
+  ;;
+  proxy-sql)
+    docker exec -it proxysql mysql -h 127.0.0.1 -P 6033 -u $USER -pamsterdam
   ;;
   mysqla|mysqlb|master|slave)
-    docker exec -it $HOST mysql -h 127.0.0.1 -P 3306 -u root -p
+    docker exec -it $HOST mysql -h 127.0.0.1 -P 3306 -u root -psecret
   ;;
 esac
