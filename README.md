@@ -33,10 +33,3 @@ Files for proxysql tutorial at PLAM16
     - MySQL A (5.6): `./mysql -h mysqla`
 
     - MySQL B (5.7): `./mysql -h mysqlb`
-
-## TODO:
-
-- Initial thought to have 2 separate docker mysql environments:
-    - First with 2 nodes in standard replication for query rewrite and failover parts
-    - Second with 2 nodes standalone, one running MySQL 5.6 and second running MySQL 5.7
-- Single proxysql container that connects to both environments.
