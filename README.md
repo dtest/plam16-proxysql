@@ -10,6 +10,11 @@ Files for proxysql tutorial at PLAM16
 - Ansible (_version:_ 2.1.0+)
 - [ProxySQL Ansible modules](https://github.com/bmildren/proxysql_ansible_modules)
     - Create a symlink in the ansible directory `library` to the ansible plugins previously copied
+
+```bash
+$ ls -l ansible/library
+lrwxr-xr-x  1 dtest  staff  43 Sep 14 20:51 ansible/library -> /Users/dtest/devel/proxysql_ansible_modules
+```
 - Bash
 
 ## Setup
