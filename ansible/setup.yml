@@ -87,7 +87,7 @@
   #     user: proxysql
   #     password: monitor
   tasks:
-    - name: "MySQL | Create proxysql schema"
+    - name: "MySQL | Create schema"
       mysql_db:
         state: present
         name: "{{ item }}"
@@ -95,6 +95,7 @@
       with_items:
         - proxysql
         - plam
+      when: db_role != 'slave'
     - name: "MySQL | Add proxysql user"
       mysql_user:
         state: present
@@ -177,3 +178,12 @@
         login_password: "{{ proxysql_admin['password'] }}"
       with_items:
         - "{{ failover_rules }}"
+    - name: "ProxySQL | Manage mirror rules"
+      proxysql_query_rules:
+        state: present
+        username: "{{ proxysql_mirroruser['user'] }}"
+        active: True
+        destination_hostgroup: 3
+        mirror_hostgroup: 4
+        login_user: "{{ proxysql_admin['user'] }}"
+        login_password: "{{ proxysql_admin['password'] }}"
