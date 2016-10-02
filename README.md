@@ -20,7 +20,8 @@ lrwxr-xr-x  1 dtest  staff  43 Sep 14 20:51 ansible/library -> /Users/dtest/deve
 ## Setup
 
 - Connect as root: `sudo su -`
-- Run `run_proxy.sh`
+- Change directory: `cd ~/dba/admin/dev/plam16-proxysql`
+- Run `./run_proxy.sh`
 - Connect to ProxySQL Admin interface: `./mysql -h proxy-admin`
 - Connect to ProxySQL SQL interface: `./mysql -h proxy-sql`
 - Connect to hosts used for rewrite and failover demonstrations
