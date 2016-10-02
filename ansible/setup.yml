@@ -95,6 +95,7 @@
       with_items:
         - proxysql
         - plam
+        - sakila
       when: db_role != 'slave'
     - name: "MySQL | Add proxysql user"
       mysql_user:
@@ -109,6 +110,23 @@
         - "{{ proxysql_monitor }}"
         - "{{ proxysql_rewriteuser }}"
         - "{{ proxysql_mirroruser }}"
+    - name: "Get sakila"
+      get_url:
+        url: "http://downloads.mysql.com/docs/sakila-db.tar.gz"
+        dest: /var/tmp/sakila-db.tar.gz
+      when: db_role == 'master'
+    - name: "Decompress sakila"
+      unarchive:
+        src: /var/tmp/sakila-db.tar.gz
+        dest: /var/tmp/
+        copy: no
+      when: db_role == 'master'
+    - name: "Import sakila"
+      command: "mysql -p{{ root_password }} -e 'source {{ item }}'"
+      with_items:
+        - /var/tmp/sakila-db/sakila-schema.sql
+        - /var/tmp/sakila-db/sakila-data.sql
+      when: db_role == "master"
 
 - hosts: proxysql
   become: no
@@ -187,3 +205,11 @@
         mirror_hostgroup: 4
         login_user: "{{ proxysql_admin['user'] }}"
         login_password: "{{ proxysql_admin['password'] }}"
+    - name: "Add application code"
+      git:
+        repo: "https://github.com/dturner9000/plam16-rrr"
+        dest: "/root/plam-rrr"
+    - name: "Create credential file"
+      template:
+        src: "client.cnf.j2"
+        dest: "/var/tmp/my.cnf"

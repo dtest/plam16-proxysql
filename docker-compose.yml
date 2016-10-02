@@ -30,4 +30,3 @@ services:
     image: dtestops/proxysql
     volumes:
       - ./proxysql.cnf:/etc/proxysql.cnf
-
