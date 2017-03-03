@@ -71,7 +71,7 @@ case $HOST in
     docker exec -it proxysql mysql -h 127.0.0.1 -P 6033 -u $USER -pamsterdam
   ;;
   mysqla|mysqlb|master|slave)
-    docker exec -it $HOST mysql -h 127.0.0.1 -P 3306 -u root -psecret
+    docker exec -it $HOST mysql -u root -psecret
   ;;
   *)
     echo "$usage
